@@ -13,6 +13,7 @@ namespace RpgRougeliketest
         DrawEngine de = null;
         IConfigurationRoot configuration = null;
         X.Gamepad gamepad = null;
+        bool useGamepad = true;
 
         public DrawFrom()
         {
@@ -20,6 +21,9 @@ namespace RpgRougeliketest
             de = new DrawEngine(Size);
             TBS.gTBS.Init();
             configuration = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").Build();
+            var d = configuration["useGamepad"];
+            useGamepad = Convert.ToBoolean(d);
+
             if (X.IsAvailable)
             {
                 gamepad = X.Gamepad_1;
@@ -30,15 +34,14 @@ namespace RpgRougeliketest
         bool next = false;
         private void timer1_Tick(object sender, EventArgs e)
         {
-            
-            if (gamepad != null)
+            if (useGamepad && gamepad != null)
             {
                 if (gamepad.Update())
                 {
                     // something happened: button pressed, stick turned or trigger was triggered
                     if (gamepad.A_up || gamepad.LBumper_up || gamepad.RBumper_up)
                         next = true;
-                    if(true)
+                    if (true)
                     {
                         var moveItend = stickToBlockPos(gamepad.LStick, deadzone + gamepad.LStick_DeadZone);
                         TBS.gTBS.IntentMovePlayer(moveItend);
@@ -52,70 +55,71 @@ namespace RpgRougeliketest
                 //    // can play with ~~vibrations~~ FFB
                 //}
             }
+            else
+            {
+                // Example: Read left thumbstick values
+                //float deadband = 0.1f; // Adjust as needed
+                //float leftThumbX = (Math.Abs((float)gamepad.LeftThumbX) < deadband) ? 0 : (float)gamepad.LeftThumbX / short.MinValue * -100;
+                //float leftThumbY = (Math.Abs((float)gamepad.LeftThumbY) < deadband) ? 0 : (float)gamepad.LeftThumbY / short.MaxValue * 100;
 
-            // Example: Read left thumbstick values
-            //float deadband = 0.1f; // Adjust as needed
-            //float leftThumbX = (Math.Abs((float)gamepad.LeftThumbX) < deadband) ? 0 : (float)gamepad.LeftThumbX / short.MinValue * -100;
-            //float leftThumbY = (Math.Abs((float)gamepad.LeftThumbY) < deadband) ? 0 : (float)gamepad.LeftThumbY / short.MaxValue * 100;
+                if (w)
+                {
+                    if (a)
+                        TBS.gTBS.IntentMovePlayer(BlockPosition.BlockPositionsExp.TopLeft);
+                    else if (d)
+                        TBS.gTBS.IntentMovePlayer(BlockPosition.BlockPositionsExp.TopRight);
+                    else
+                        TBS.gTBS.IntentMovePlayer(BlockPosition.BlockPositionsExp.Top);
+                }
+                else if (s)
+                {
+                    if (a)
+                        TBS.gTBS.IntentMovePlayer(BlockPosition.BlockPositionsExp.BottomLeft);
+                    else if (d)
+                        TBS.gTBS.IntentMovePlayer(BlockPosition.BlockPositionsExp.BottomRight);
+                    else
+                        TBS.gTBS.IntentMovePlayer(BlockPosition.BlockPositionsExp.Bottom);
+                }
+                else
+                {
+                    if (a)
+                        TBS.gTBS.IntentMovePlayer(BlockPosition.BlockPositionsExp.Left);
+                    else if (d)
+                        TBS.gTBS.IntentMovePlayer(BlockPosition.BlockPositionsExp.Right);
+                    else
+                        TBS.gTBS.IntentMovePlayer(BlockPosition.BlockPositionsExp.Middle);
+                }
 
-            //if (w)
-            //{
-            //    if (a)
-            //        TBS.gTBS.IntentMovePlayer(BlockPosition.BlockPositionsExp.TopLeft);
-            //    else if (d)
-            //        TBS.gTBS.IntentMovePlayer(BlockPosition.BlockPositionsExp.TopRight);
-            //    else
-            //        TBS.gTBS.IntentMovePlayer(BlockPosition.BlockPositionsExp.Top);
-            //}
-            //else if (s)
-            //{
-            //    if (a)
-            //        TBS.gTBS.IntentMovePlayer(BlockPosition.BlockPositionsExp.BottomLeft);
-            //    else if (d)
-            //        TBS.gTBS.IntentMovePlayer(BlockPosition.BlockPositionsExp.BottomRight);
-            //    else
-            //        TBS.gTBS.IntentMovePlayer(BlockPosition.BlockPositionsExp.Bottom);
-            //}
-            //else
-            //{
-            //    if (a)
-            //        TBS.gTBS.IntentMovePlayer(BlockPosition.BlockPositionsExp.Left);
-            //    else if (d)
-            //        TBS.gTBS.IntentMovePlayer(BlockPosition.BlockPositionsExp.Right);
-            //    else
-            //        TBS.gTBS.IntentMovePlayer(BlockPosition.BlockPositionsExp.Middle);
-            //}
 
-            
 
-            //if (i)
-            //{
-            //    if (j)
-            //        TBS.gTBS.IntentChangeTarget(BlockPosition.BlockPositionsExp.TopLeft);
-            //    else if (l)
-            //        TBS.gTBS.IntentChangeTarget(BlockPosition.BlockPositionsExp.TopRight);
-            //    else
-            //        TBS.gTBS.IntentChangeTarget(BlockPosition.BlockPositionsExp.Top);
-            //}
-            //else if (k)
-            //{
-            //    if (j)
-            //        TBS.gTBS.IntentChangeTarget(BlockPosition.BlockPositionsExp.BottomLeft);
-            //    else if (l)
-            //        TBS.gTBS.IntentChangeTarget(BlockPosition.BlockPositionsExp.BottomRight);
-            //    else
-            //        TBS.gTBS.IntentChangeTarget(BlockPosition.BlockPositionsExp.Bottom);
-            //}
-            //else
-            //{
-            //    if (j)
-            //        TBS.gTBS.IntentChangeTarget(BlockPosition.BlockPositionsExp.Left);
-            //    else if (l)
-            //        TBS.gTBS.IntentChangeTarget(BlockPosition.BlockPositionsExp.Right);
-            //    else
-            //        TBS.gTBS.IntentChangeTarget(BlockPosition.BlockPositionsExp.Middle);
-            //}
-
+                if (i)
+                {
+                    if (j)
+                        TBS.gTBS.IntentChangeTarget(BlockPosition.BlockPositionsExp.TopLeft);
+                    else if (l)
+                        TBS.gTBS.IntentChangeTarget(BlockPosition.BlockPositionsExp.TopRight);
+                    else
+                        TBS.gTBS.IntentChangeTarget(BlockPosition.BlockPositionsExp.Top);
+                }
+                else if (k)
+                {
+                    if (j)
+                        TBS.gTBS.IntentChangeTarget(BlockPosition.BlockPositionsExp.BottomLeft);
+                    else if (l)
+                        TBS.gTBS.IntentChangeTarget(BlockPosition.BlockPositionsExp.BottomRight);
+                    else
+                        TBS.gTBS.IntentChangeTarget(BlockPosition.BlockPositionsExp.Bottom);
+                }
+                else
+                {
+                    if (j)
+                        TBS.gTBS.IntentChangeTarget(BlockPosition.BlockPositionsExp.Left);
+                    else if (l)
+                        TBS.gTBS.IntentChangeTarget(BlockPosition.BlockPositionsExp.Right);
+                    else
+                        TBS.gTBS.IntentChangeTarget(BlockPosition.BlockPositionsExp.Middle);
+                }
+            }
             if (next)
             {
                 TBS.gTBS.NextStep(); //NextBtn_Click(sender, e);
